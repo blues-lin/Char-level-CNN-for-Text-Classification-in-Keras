@@ -1,4 +1,4 @@
-# Char-level-CNN-for-Chinese-Text-Classification-in-Keras
+# Character-level Convolution Neural Network for Text Classification in Keras
 
 Train character-level convolutional network for text classification. Based on "Character-level Convolutional Networks for Text Classification" by Xiang Zhang, [link here](https://arxiv.org/abs/1509.01626).
 
