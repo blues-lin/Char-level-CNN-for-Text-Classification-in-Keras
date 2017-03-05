@@ -10,7 +10,7 @@ Attempt to build a machine can classify term through the text information found 
 
 * Python3
 * [Keras](http://keras.io/)
-* [TensorFlow](https://www.tensorflow.org). Model ran and test in version 0.12
+* [TensorFlow](https://www.tensorflow.org)
 
 ## Runtime model
 
