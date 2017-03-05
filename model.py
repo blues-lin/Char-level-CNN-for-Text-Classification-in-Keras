@@ -2,12 +2,13 @@
 Character level cnn for chinese text classification.
 Model reference: https://arxiv.org/abs/1509.01626
 
-Accuracy gets to 71-72% in validation data
-and 70-71% in test data after 10 epochs with following setting:
+Accuracy gets to 77-78% in validation data
+and 78-79% in test data after 5 epochs with following setting:
 TEXT_LENGTH = 500
 NB_FILTER = [64, 128]
 NB_GRAM = [4, 3, 3]
 FULLY_CONNECTED_UNIT = 256
+DROPOUT = [0.7, 0.7]
 """
 from keras.models import Sequential
 from keras.layers import Dense
@@ -31,14 +32,14 @@ TEXT_LENGTH = 500
 NB_FILTER = [64, 128]
 NB_GRAM = [4, 3, 3]
 FULLY_CONNECTED_UNIT = 256
-DROPOUT = [0.5, 0.5]  # dropout rate in 2 fully connected layers.
+DROPOUT = [0.7, 0.7]  # dropout rate in 2 fully connected layers.
 
 # Training parameters
 TEST_PERCENT = 0.1  # test data %
 VALID_PERCENT = 0.1  # valid data %
-epochs = 10
+epochs = 15
 batch_size = 16
-EARLY_STOP = False
+EARLY_STOP = True
 
 # Prepare training data.
 print("Preparing Data...")
@@ -58,11 +59,28 @@ inverted_data = text_searcher.InvertedIndex(
     text_searcher.genDataFromSqlite(TEXT_CORPUS))
 
 print("Searching docs...")
-searchResultList = []
+
+searchResultDict = {}
+duplicate = {}  # Delete duplicate text searched by more than one terms.
 for terms in training_terms:
     query = terms[0]
-    for doc in inverted_data.searchGenerator(query):
-        searchResultList.append((doc, terms[1]))
+    for index, doc in inverted_data.searchGenerator(query, withIndex=True):
+        if index in searchResultDict:
+            if terms[1] == searchResultDict[index][1]:
+                continue
+            duplicate.setdefault(
+                index, set()).add(searchResultDict[index][1][0])
+            duplicate[index].add(terms[1][0])
+            del searchResultDict[index]
+        else:
+            searchResultDict[index] = (doc, terms[1])
+
+print("Duplicate text number: {}".format(len(duplicate)))
+
+searchResultList = []
+for index in searchResultDict:
+    searchResultList.append(searchResultDict[index])
+
 print("Docs: {}".format(len(searchResultList)))
 
 print("Delete inverted index.")

@@ -106,7 +106,10 @@ class InvertedIndex:
                         bufIndex.append(docIndex)
         return bufIndex
 
-    def searchGenerator(self, text):
+    def searchGenerator(self, text, withIndex=False):
         indices = self._search(text)
         for index in indices:
-            yield self._docIndex[index]
+            if withIndex is False:
+                yield self._docIndex[index]
+            else:
+                yield (index, self._docIndex[index])
