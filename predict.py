@@ -27,7 +27,7 @@ class Predictor:
         # Corpus path.
         self._corpusPath = os.path.join(BASE_PATH, "data/corpus.sqlite")
         # Text length should be as same as training model.
-        self.TEXT_LENGTH = 800
+        self.TEXT_LENGTH = 500
 
         # Inverted index.
         self._inverted_data = None
